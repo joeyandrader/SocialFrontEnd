@@ -1,0 +1,71 @@
+.Container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../assets/loginbg.avif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+}
+
+.LoginContainerForm {
+    width: 500px;
+    height: auto;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.LoginContainerForm a {
+    color: whitesmoke;
+}
+
+.LoginForm {
+    width: 100%;
+    padding: 10px;
+}
+
+.LoginForm .FormGroup {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.FormInput {
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    background-color: whitesmoke;
+    outline: none;
+}
+
+.FormInput::placeholder {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.FormButton {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0c65eb;
+    color: whitesmoke;
+    font-weight: 500;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .5s all;
+}
+
+.FormButton:hover {
+
+    background-color: #196ff0;
+}
+
+.LinkGroup {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}

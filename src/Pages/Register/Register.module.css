@@ -1,0 +1,99 @@
+.Container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../assets/loginbg.avif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+    background-attachment: fixed;
+}
+
+.RegisterContainerForm {
+    width: 500px;
+    height: auto;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+
+.RegisterContainerForm a {
+    padding-left: 10px;
+    color: whitesmoke;
+}
+
+.RegisterForm {
+    width: 100%;
+    padding: 10px;
+}
+
+.RegisterForm .FormGroup {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.FormInput {
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    background-color: whitesmoke;
+    outline: none;
+}
+
+.FormInput::placeholder {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.FormButton {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #0c65eb;
+    color: whitesmoke;
+    font-weight: 500;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .5s all;
+}
+
+.FormButton:hover {
+
+    background-color: #196ff0;
+}
+
+.formCheckBox {
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+input[type="checkbox"] {
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid currentColor;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--form-control-color);
+}

@@ -1,0 +1,31 @@
+.FormInput {
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    background-color: whitesmoke;
+    outline: none;
+}
+
+.formError {
+    border: 2px solid rgb(252, 159, 159);
+}
+
+.FormInput::placeholder {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.SmallError {
+    padding: 3px;
+    border-radius: 5px;
+    display: inline-block;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.SmallDisplay {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
