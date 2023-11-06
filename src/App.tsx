@@ -1,10 +1,8 @@
 import './App.css'
 import { Link, Outlet } from 'react-router-dom'
-import "react-toastify/dist/ReactToastify.css";
 import MyToast from './Components/Toastify/MyToast'
 import Navbar from './Components/Navbar/Navbar';
 import { AiOutlinePlus } from 'react-icons/ai'
-import ModalPost from './Components/ModalPost/ModalPost';
 
 function App() {
 

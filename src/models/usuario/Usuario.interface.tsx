@@ -11,18 +11,7 @@ export interface UsuarioRegister {
  * User Metodo Response
  */
 export interface User {
-    data: {
-        id: number,
-        firstName: string,
-        lastName: string,
-        email: string,
-        age: number,
-        biography: string,
-        accountType: number,
-        active: boolean,
-        createdAt: Date,
-        updateAt: Date
-    },
+    data: UserInfo,
     success: boolean,
     code: number,
     message: string,
@@ -34,10 +23,12 @@ export interface UserInfo {
     id: number,
     firstName: string,
     lastName: string,
+    userName: string,
     email: string,
     age: number,
     biography: string,
     accountType: number,
+    imageUrl: string,
     active: boolean,
     createdAt: Date,
     updateAt: Date

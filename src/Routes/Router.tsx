@@ -5,6 +5,7 @@ import Register from "../Pages/Register/Register";
 import App from "../App";
 import Home from "../Pages/Home/Home";
 import { RequireAuth } from "./RequireAuth";
+import NewPost from "../Pages/Posts/NewPost";
 
 
 const Router = createBrowserRouter([
@@ -13,7 +14,8 @@ const Router = createBrowserRouter([
     {
         element: <App />,
         children: [
-            { path: "/", element: <RequireAuth><Home /></RequireAuth> }
+            { path: "/", element: <RequireAuth><Home /></RequireAuth> },
+            { path: "/post/new", element: <RequireAuth><NewPost /></RequireAuth> }
         ]
     }
 ]);

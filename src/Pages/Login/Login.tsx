@@ -1,14 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '../../Components/Input/Input';
-import "react-toastify/dist/ReactToastify.css";
 import Toastify from '../../Components/Toastify/MyToast';
 import { useContext } from 'react';
 import { AuthContext } from '../../Context/UserContext';
-import { toast } from 'react-toastify';
 
 const schema = z.object({
     email: z.string().email("Insira um email valido").nonempty("O Email é obrigatorio"),
@@ -18,21 +16,24 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const Login = () => {
-    const navigate = useNavigate()
-    const authContext = useContext(AuthContext)
+    const navigete = useNavigate()
+    const { user, signed, loadingAuth } = useContext(AuthContext)
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
     })
 
+    if (!loadingAuth) {
+        if (user) {
+            return <Navigate to="/" />
+        }
+    }
+
     const onSubmit = async (data: FormData) => {
-        const isLogged = await authContext.signed(data.email, data.password)
+        const isLogged = await signed(data.email, data.password)
         if (isLogged) {
-            console.log(authContext.user)
-            navigate('/')
-            setTimeout(() => {
-                toast.success("Logado com sucesso!")
-            }, 1);
+            console.log("logado")
+            return navigete('/', { replace: true })
         }
     }
 

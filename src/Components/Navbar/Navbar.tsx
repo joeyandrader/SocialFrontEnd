@@ -1,13 +1,15 @@
-import { useState } from "react";
-import './Navbar.css'
-import { AiOutlinePlusCircle } from 'react-icons/ai'
-import { Link, NavLink } from "react-router-dom";
-import ModalPost from "../ModalPost/ModalPost";
+import { useContext, useState } from "react";
+import styles from './Navbar.module.css'
+import { AiFillCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai'
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../Context/UserContext";
+import ImageProfile from "../ImageProfile/ImageProfile";
 
 const Navbar = () => {
+    const { user } = useContext(AuthContext)
+    const { logout } = useContext(AuthContext)
     const [open, setOpen] = useState<boolean>(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [openModal, setOpenModal] = useState<boolean>(false)
 
     const handleMobileMenuToggle = () => {
         setMobileMenuOpen(!mobileMenuOpen);
@@ -17,9 +19,6 @@ const Navbar = () => {
     const handleOpen = () => {
         setOpen(prevState => !prevState)
         document.addEventListener('click', handleClickOutside);
-    }
-    const handleOpenModal = () => {
-        setOpenModal(prevState => !prevState)
     }
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -33,10 +32,12 @@ const Navbar = () => {
         }
     }
 
+    const handleLogout = () => {
+        logout()
+    }
 
     return (
         <>
-            <ModalPost open={openModal} />
             <nav className="bg-gray-800 fixed w-full">
                 <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                     <div className="relative flex h-16 items-center justify-between">
@@ -59,7 +60,7 @@ const Navbar = () => {
                             </div>
                             <div className="hidden sm:ml-6 sm:block">
                                 <div className="flex space-x-4">
-                                    <Link to="#" className=" hover:bg-gray-700 text-white rounded-md px-3 py-2 text-sm font-medium">Inicio</Link>
+                                    <Link to="/" className=" hover:bg-gray-700 text-white rounded-md px-3 py-2 text-sm font-medium">Inicio</Link>
                                     <Link to="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Atividade</Link>
                                     <Link to="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Mensagem</Link>
                                     <Link to="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Caixa de entrada</Link>
@@ -87,24 +88,22 @@ const Navbar = () => {
                                     <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onClick={handleOpen}>
                                         <span className="absolute -inset-1.5"></span>
                                         <span className="sr-only">Open user menu</span>
-                                        <img className="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                                        <ImageProfile imageUrl={user?.data.imageUrl} user={user?.data} width="10" height="10" />
                                     </button>
                                 </div>
-
                                 {open &&
                                     <>
                                         <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex={1}>
                                             <a href="http://www.google.com.br" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={1} id="user-menu-item-0">Meu perfil</a>
-                                            <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={1} id="user-menu-item-1">Configurações</a>
-                                            <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={1} id="user-menu-item-2">Sair</a>
+                                            <Link to="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={1} id="user-menu-item-1">Configurações</Link>
+                                            <Link to="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={1} id="user-menu-item-2" onClick={handleLogout}>Sair</Link>
                                         </div>
                                     </>
                                 }
                             </div>
-                            <button className="ml-5 bg-slate-900 rounded-md p-2 text-slate-200 justify-center items-center gap-2 sm:flex hidden"
-                                onClick={handleOpenModal}>
+                            <Link to="/post/new" className="ml-5 bg-slate-900 rounded-md p-2 text-slate-200 justify-center items-center gap-2 sm:flex hidden">
                                 <AiOutlinePlusCircle size={20} /> Nova postagem
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -9,14 +9,14 @@ export interface Post {
 }
 
 export interface PostagemDados {
-    id: number,
-    title: string,
-    text: string,
-    usuarioId: number,
-    createdAt: Date,
-    updateAt: Date,
+    id?: number,
+    title?: string,
+    text?: string,
+    usuarioId?: number,
+    createdAt?: Date,
+    updateAt?: Date,
     fotos?: Fotos[],
-    usuario: UserInfo,
+    usuario?: UserInfo,
     comentario?: Comentarios[],
     like?: Like[]
 }

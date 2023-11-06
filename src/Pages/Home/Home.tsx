@@ -14,9 +14,7 @@ const Home = () => {
         const getAllPost = async () => {
             try {
                 await api.GetAllPost(token).then((res) => {
-                    console.log(res)
                     setPostList(res)
-
                 }).catch((err) => {
                     console.log(err)
                 });

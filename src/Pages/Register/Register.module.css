@@ -68,14 +68,14 @@
     background-color: #196ff0;
 }
 
-.formCheckBox {
+/* .formCheckBox {
     display: flex;
     justify-content: start;
     gap: 10px;
     color: white;
     font-size: 20px;
     margin-bottom: 20px;
-}
+} */
 
 input[type="checkbox"] {
     font: inherit;

@@ -8,13 +8,15 @@ interface AuthProviderProps {
 }
 
 type AuthContextData = {
-    user: User | null
+    user?: User | null
     signed: (email: string, password: string) => Promise<boolean>;
     loadingAuth: boolean,
-    token: string
+    token: string,
+    logout: () => void
 }
 
 export const AuthContext = createContext<AuthContextData>(null!)
+const cookies = new Cookies(); //cookies
 
 function AuthProvider({ children }: AuthProviderProps) {
 
@@ -25,16 +27,14 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
         const validaToken = async () => {
-            const cookies = new Cookies();
-            var cookieData = cookies.get("@UserAuth");
-            if (cookieData) {
-                var getUser = await getUserInfo(cookieData)
+            var tokenData = cookies.get("@UserAuth");
+            if (tokenData) {
+                var getUser = await getUserInfo(tokenData)
                 setUser(getUser)
-                setToken(cookieData)
+                setToken(tokenData)
                 setLoadingAuth(false)
                 return;
             }
-
             setToken("")
             setUser(null)
             setLoadingAuth(false)
@@ -45,15 +45,27 @@ function AuthProvider({ children }: AuthProviderProps) {
         }
     }, [])
 
+
+    /**
+     * Efetua metodo de login
+     * @param email 
+     * @param password 
+     * @returns 
+     */
     const signed = async (email: string, password: string) => {
-        var result = await api.signIn(email, password)
-        if (result.success) {
-            const cookies = new Cookies()
-            cookies.set("@UserAuth", result.data.access_Token, { sameSite: 'strict', secure: true, path: "/" })
-            setToken(result.data.access_Token)
-            getUserInfo(result.data.access_Token)
-            setLoadingAuth(false)
-            return true;
+        var data = await api.signIn(email, password)
+        if (data) {
+            var current = (new Date().getTime() + data.data.expires_in) / 1000;
+            cookies.set("@UserAuth", data.data.access_Token,
+                { sameSite: 'strict', secure: true, path: '/', expires: new Date(current * 1000) }
+            )
+            var userInfo = await getUserInfo(data.data.access_Token)
+            if (userInfo) {
+                setUser(userInfo)
+                setToken(data.data.access_Token)
+                setLoadingAuth(false)
+                return true;
+            }
         }
         setLoadingAuth(false)
         return false;
@@ -63,18 +75,21 @@ function AuthProvider({ children }: AuthProviderProps) {
     async function getUserInfo(token: string) {
         var result = await api.getUserInfo(token)
         if (result?.success) {
-            setLoadingAuth(false)
             return result;
         } else {
-            setLoadingAuth(false)
-            setToken("")
-            setUser(null)
             return null;
         }
     }
 
+    const logout = () => {
+        cookies.remove("@UserAuth", { sameSite: 'strict', secure: true, path: '/' })
+        setToken("")
+        setUser(null)
+        setLoadingAuth(false)
+    }
+
     return (
-        <AuthContext.Provider value={{ user, signed, loadingAuth, token }}>
+        <AuthContext.Provider value={{ user, signed, loadingAuth, token, logout }}>
             {children}
         </AuthContext.Provider>
     )
