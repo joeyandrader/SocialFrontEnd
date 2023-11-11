@@ -60,7 +60,6 @@ const NewPost = () => {
             usuarioId: user?.data.id
         }
         await api.CreatePost(token, obj).then((res) => {
-            console.log(res.data)
             if (res.success) {
                 uploadImages(res.data.id)
             }
@@ -119,7 +118,7 @@ const NewPost = () => {
                                     <MdPhotoLibrary size={30} />
                                     <input type="file" id='images' hidden onChange={handleImageChange} multiple />
                                 </label>
-                                <span className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-slate-200 text-red-900 p-2 rounded-md absolute bottom-full -left-3 mt-2 w-auto'>Adicionar imagens</span>
+                                <span className='invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-slate-200 text-red-900 p-2  rounded-md absolute bottom-full left-0 md:-left-12 bottom-16 mt-2 w-40 text-center'>Adicionar imagens</span>
                             </div>
                         </div>
 

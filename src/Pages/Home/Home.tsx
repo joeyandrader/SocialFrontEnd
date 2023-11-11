@@ -3,7 +3,6 @@ import { PostService } from "../../services/PostService"
 import { AuthContext } from "../../Context/UserContext"
 import { Post } from "../../models/Post/Post.interface"
 import Posts from "../../Components/Post/Post"
-import ModalPost from "../../Components/ModalPost/ModalPost"
 
 const Home = () => {
     const { token } = useContext(AuthContext)

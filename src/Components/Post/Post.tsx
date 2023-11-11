@@ -2,32 +2,59 @@ import { Link } from 'react-router-dom'
 import { AiOutlineHeart, AiOutlineComment, AiOutlineShareAlt } from 'react-icons/ai'
 import { RiUserFollowLine } from 'react-icons/ri'
 import { BiSolidTrashAlt } from 'react-icons/bi'
-import Comments from '../Comments/Comments'
-import { PostagemDados } from '../../models/Post/Post.interface'
-import { useContext, useEffect, useState } from 'react'
-import { User } from '../../models/usuario/Usuario.interface'
+import { Comentarios, Like, PostagemDados } from '../../models/Post/Post.interface'
+import { FormEvent, useContext, useState } from 'react'
 import { AuthContext } from '../../Context/UserContext'
 import ImageProfile from '../ImageProfile/ImageProfile'
+import { PostService } from '../../services/PostService'
+import Comments from '../Comments/Comments'
 
 
 
 const Post = ({ id, fotos, text, updateAt, usuarioId, createdAt, title, usuario, comentario, like }: PostagemDados) => {
-    const auth = useContext(AuthContext)
+    const { user, token } = useContext(AuthContext)
     const [openComments, setOpenComments] = useState<boolean>(false)
-    const [user, setUser] = useState<User | null>(null)
     const [expandirConteudo, setExpandirConteudo] = useState(false);
+    const [commentText, setCommentText] = useState<string>("");
+    const [post, setPost] = useState<PostagemDados>({ id, fotos, text, updateAt, usuario, createdAt, title, usuarioId, comentario, like });
 
+    //Api
+    const apiPost = PostService();
 
     const handleOpenComments = () => {
         setOpenComments(open => !open)
     }
 
-    useEffect(() => {
-        if (auth.user) {
-            setUser(auth.user)
+    const handleLike = async () => {
+        const objLike: Like = {
+            postId: post.id,
+            usuarioId: user?.data.id,
+            createdAt: new Date()
         }
-    }, [])
+        await PostService().LikePost(token, objLike).then(async (res) => {
+            await PostService().GetPost(token, res.data.postId).then((res) => {
+                setPost({ ...post, like: res.data.like })
+            })
+        })
+    }
 
+    const handlComments = async () => {
+        if (commentText != "") {
+            const obj: Comentarios = {
+                postId: post.id,
+                texto: commentText,
+                usuarioId: user?.data.id,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+            await apiPost.CreateComments(token, obj).then(async (res) => {
+                await PostService().GetPost(token, res.data.postId).then((resPost) => {
+                    setCommentText("");
+                    setPost({ ...post, comentario: resPost.data.comentario })
+                })
+            })
+        }
+    }
 
     return (
         <>
@@ -39,7 +66,7 @@ const Post = ({ id, fotos, text, updateAt, usuarioId, createdAt, title, usuario,
                     </div>
                     <div>
                         {/* Verifica se o Id da postagem é igual a do us */}
-                        {user && user.data?.id == usuarioId ? (
+                        {user && user.data?.id == post.usuarioId ? (
                             <>
                                 <div className='group relative inline-block'>
                                     <Link to="" data-popover-target="popover-bottom" data-popover-placement="bottom" className='flex justify-center items-center gap-2 hover:text-red-500 duration-300 transition-colors'><BiSolidTrashAlt size={20} /></Link>
@@ -56,10 +83,10 @@ const Post = ({ id, fotos, text, updateAt, usuarioId, createdAt, title, usuario,
                     <>
                         <div className='sua-classe relative'>
                             <div className='flex flex-col gap-1 justify-center items-center mb-3'>
-                                {fotos?.map((items, index) => (
+                                {post.fotos?.map((items, index) => (
                                     // Renderize apenas os elementos até um certo limite, por exemplo, 5 elementos.
                                     index < 2 ? (
-                                        <img src={`https://localhost:7292/public/img/${items?.urlPhoto}`} alt={`Foto da postagem: ${title}`} key={items.id} className='w-full h-full object-cover' />
+                                        <img src={`https://localhost:7292/public/img/${items?.urlPhoto}`} alt={`Foto da postagem: ${post.title}`} key={items.id} className='w-full h-full object-cover' />
                                     ) : null
                                 ))}
                             </div>
@@ -72,7 +99,7 @@ const Post = ({ id, fotos, text, updateAt, usuarioId, createdAt, title, usuario,
                             {expandirConteudo && (
                                 <div className='flex flex-col gap-1 justify-center items-center mb-3'>
                                     {fotos && fotos.slice(2).map((items) => (
-                                        <img src={`https://localhost:7292/public/img/${items?.urlPhoto}`} alt={`Foto da postagem: ${title}`} key={items.id} className='w-full' />
+                                        <img src={`https://localhost:7292/public/img/${items?.urlPhoto}`} alt={`Foto da postagem: ${post.title}`} key={items.id} className='w-full' />
                                     ))}
                                 </div>
                             )}
@@ -97,19 +124,37 @@ const Post = ({ id, fotos, text, updateAt, usuarioId, createdAt, title, usuario,
                 </div>
                 <div className='flex gap-3 justify-around items-center p-3'>
                     <div className='flex flex-col items-center'>
-                        <Link to="" className='hover:text-red-400 transition-colors duration-300'><AiOutlineHeart size={30} /></Link>
-                        <p>{like?.length}</p>
+
+                        <Link to=""
+                            className={`hover:bg-red-400 transition-colors duration-300 text-white rounded-full p-1 ${post.like?.find(x => x.usuarioId == user?.data.id) ? 'bg-red-400 hover:bg-red-300' : ''}`} onClick={handleLike}>
+                            <AiOutlineHeart size={30} /></Link>
+                        <p>{post.like?.length}</p>
                     </div>
                     <div className='flex flex-col items-center'>
                         <Link to="" onClick={handleOpenComments} className='hover:text-sky-400 transition-colors duration-300'><AiOutlineComment size={30} /></Link>
-                        <p>{comentario?.length}</p>
+                        <p>{post.comentario?.length}</p>
                     </div>
                     <div className='flex flex-col items-center'>
                         <Link to="" className='hover:text-slate-400 transition-colors duration-300'><AiOutlineShareAlt size={30} /></Link>
                         <p>2</p>
                     </div>
                 </div>
-                {openComments && <Comments comentario={comentario} />}
+                {openComments && (
+                    <div className='p-3 bg-slate-600 rounded-sm mb-3'>
+                        <div className='flex justify-between items-center mb-3'>
+                            <h1 className='text-2xl font-semibold'>Comentarios</h1>
+                            <Link to="" className='bg-slate-800 rounded-md p-2 hover:bg-slate-900 duration-200' onClick={handlComments}>Comentar</Link>
+                        </div>
+                        <div>
+                            <textarea name="comments" className='w-full rounded-md border-none bg-slate-900 text-gray-100 mb-3 p-2' placeholder='Escreva uma mensagem' value={commentText} onChange={(e) => setCommentText(e.target.value)}></textarea>
+                        </div>
+                        {post.comentario && post.comentario.map((item) => (
+                            <Comments comentario={{ ...item }} key={item.id} />
+                        ))}
+                    </div>
+                )}
+
+
             </div >
         </>
     )

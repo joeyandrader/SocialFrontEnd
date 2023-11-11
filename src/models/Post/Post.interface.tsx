@@ -28,17 +28,18 @@ export interface Fotos {
 }
 
 export interface Comentarios {
-    id: number,
-    postId: number,
-    usuarioId: number,
+    id?: number,
+    postId?: number,
+    usuarioId?: number,
     texto: string,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    usuario?: UserInfo
 }
 
 export interface Like {
-    id: number,
-    postId: number,
-    usuarioId: number,
-    createdAt: Date
+    id?: number,
+    postId?: number,
+    usuarioId?: number,
+    createdAt?: Date
 }
